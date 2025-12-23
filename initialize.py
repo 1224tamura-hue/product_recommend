@@ -95,7 +95,7 @@ def initialize_retriever():
     if "retriever" in st.session_state:
         return
     
-    loader = CSVLoader(ct.RAG_SOURCE_PATH, encoding="utf-8")
+    loader = CSVLoader(ct.RAG_SOURCE_PATH, encoding="utf-8-sig")
     docs = loader.load()
 
     # OSがWindowsの場合、Unicode正規化と、cp932（Windows用の文字コード）で表現できない文字を除去
