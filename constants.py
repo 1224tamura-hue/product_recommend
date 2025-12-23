@@ -46,3 +46,11 @@ INITIALIZE_ERROR_MESSAGE = "初期化処理に失敗しました。"
 CONVERSATION_LOG_ERROR_MESSAGE = "過去の会話履歴の表示に失敗しました。"
 RECOMMEND_ERROR_MESSAGE = "商品レコメンドに失敗しました。"
 LLM_RESPONSE_DISP_ERROR_MESSAGE = "商品情報の表示に失敗しました。"
+
+# ==========================================
+# 在庫表示用
+# ==========================================
+STOCK_STATUS_LOW = "残りわずか"
+STOCK_STATUS_NONE = "なし"
+STOCK_ICON_LOW = "⚠️"
+STOCK_ICON_NONE = "!"

@@ -58,8 +58,14 @@ def display_product(result):
     logger = logging.getLogger(ct.LOGGER_NAME)
 
     # LLMレスポンスのテキストを辞書に変換
-    product_lines = result[0].page_content.split("\n")
-    product = {item.split(": ")[0]: item.split(": ")[1] for item in product_lines}
+    product_lines = [line for line in result[0].page_content.split("\n") if line.strip()]
+    product = {}
+    for line in product_lines:
+        if ": " not in line:
+            continue
+        key, value = line.split(": ", 1)
+        key = key.strip().lstrip("\ufeff")
+        product[key] = value.strip()
 
     st.markdown("以下の商品をご提案いたします。")
 
@@ -68,6 +74,29 @@ def display_product(result):
             商品名：{product['name']}（商品ID: {product['id']}）\n
             価格：{product['price']}
     """)
+
+    # 在庫状況の表示
+    stock_status = product.get("stock_status")
+    if stock_status == ct.STOCK_STATUS_LOW:
+        st.markdown(
+            f"""
+            <div style="border: 3px solid #e34b3b; background: #fff7e5; padding: 16px 18px; border-radius: 6px; color: #8a5a1a; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 20px;">{ct.STOCK_ICON_LOW}</span>
+              <span>ご好評につき、在庫数が残りわずかです。購入をご希望の場合、お早めのご注文をおすすめいたします。</span>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    elif stock_status == ct.STOCK_STATUS_NONE:
+        st.markdown(
+            f"""
+            <div style="border: 3px solid #e34b3b; background: #fdeaea; padding: 16px 18px; border-radius: 6px; color: #8b4d4d; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+              <span style="width: 22px; height: 22px; border: 2px solid #8b4d4d; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; line-height: 1; flex: 0 0 auto;">{ct.STOCK_ICON_NONE}</span>
+              <span>申し訳ございませんが、本商品は在庫切れとなっております。入荷までもうしばらくお待ちください。</span>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
     # 「商品カテゴリ」と「メーカー」と「ユーザー評価」
     st.code(f"""
